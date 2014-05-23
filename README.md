@@ -8,4 +8,4 @@ This repository is organized in several folders:
 - Code: The source code is devided in two parts
 	- Analyze: Program for IP stack evaluation
 	- TFTPboot: Updated version of a TFTP boot loader for MSP430. 
-- Figures: All the used figures for the final report
+- Figures: All of the used figures in the final report
