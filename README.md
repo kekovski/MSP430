@@ -7,5 +7,5 @@ This repository is organized in several folders:
 - Captures: All the Wireshark captures 
 - Code: The source code is divided in two parts
 	- Analyze: Program for IP stack evaluation
-	- TFTPboot: Updated version of a TFTP boot loader for MSP430. 
+	- TFTPboot: Updated version of a TFTP boot loader for MSP430 
 - Figures: All of the used figures in the final report
