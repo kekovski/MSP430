@@ -1,0 +1,1 @@
+"./ipstack/UDP.obj" "./ipstack/TFTPc.obj" "./ipstack/StackTsk.obj" "./ipstack/IP.obj" "./ipstack/ICMP.obj" "./ipstack/DHCP.obj" "./ipstack/ARP.obj" "./main.obj" "./hardware_board.obj" "./hal_pmm.obj" "./flash.obj" "./config.obj" "./appconfig.obj" "./Tick.obj" "./Parser.obj" "./ENC28J60.obj" "./Compiler.obj" "../lnk_msp430f5437a.cmd" -l"libmath.a" -l"libc.a" 
