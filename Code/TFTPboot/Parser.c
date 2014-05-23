@@ -2,8 +2,7 @@
  * Parser.c
  *
  *  Created on: 16/10/2012
- *  Updated on: May 2014 by Kenan Alci
- *
+ *      Author: T
  */
 
 #include "Parser.h"
@@ -17,6 +16,8 @@
 #define RAM_END_ADDR 		(BYTE *)0x005BFF
 #define FLASH_START_ADDR	(BYTE *)0x005C00
 #define FLASH_END_ADDR 		(BYTE *)0x03FFFF
+//#define FLASH_START_ADDR	(BYTE *)0x010000
+//#define FLASH_END_ADDR 		(BYTE *)0x045BFF
 
 
 //File to be translated into machine code and stored in memory
@@ -139,7 +140,7 @@ PARSER_STATUS ParserTask(int bytesToRead) {
 			c = *currentTxtPtr;
 			//If the char is an hexadecimal number, we store it in a buffer
 			//until we have the full address
-			if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')	// Error
+			if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')
 					|| (c >= 'a' && c <= 'f')) {
 				textBuf[nNibble] = c;
 				currentTxtPtr++;
@@ -153,6 +154,8 @@ PARSER_STATUS ParserTask(int bytesToRead) {
 				textBuf[nNibble] = '\0';
 				//We read the address, which is stored in hexadecimal format
 				currentCodePtr = (BYTE *) strtoul(textBuf, NULL, 16);
+				//currentCodePtr = (BYTE *) FLASH_START_ADDR;
+				//currentCodePtr = textBuf;
 				//strtoul returns 0 in case of error, which implies a mistake in the format
 				if (currentCodePtr == 0) {
 					smParse = SM_PARSE_WRONG_FORMAT;

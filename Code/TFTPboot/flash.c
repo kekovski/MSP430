@@ -71,7 +71,7 @@ void Flash_segmentErase (unsigned int baseAddress, unsigned char *Flash_ptr)
     HWREG(baseAddress + OFS_FCTL1) = FWKEY + ERASE;
 
     //Dummy write to erase Flash seg
-    //*Flash_ptr = 0; --> Unnecessary reset
+    //*Flash_ptr = 0;
 
     //test busy
     while (HWREGB(baseAddress + OFS_FCTL3) & BUSY) ;
@@ -190,6 +190,7 @@ void Flash_write8 (unsigned int baseAddress,
         while (HWREGB(baseAddress + OFS_FCTL3) & BUSY) ;
 
         //Write to Flash
+        //*Flash_ptr++ = *auxDataPtr++;
         *Flash_ptr++ = *Data_ptr++;
         numberOfBytes--;
     }

@@ -4,7 +4,6 @@
 //  Albert Lopez and Francisco Sanchez
 //  Feb 2012
 //  Built with Code Composer Studio v4
-//	Updated May 2014 By Kenan Alci
 //
 
 #include <msp430.h>
@@ -23,6 +22,8 @@
 #define ENC28J60_REV	6
 #define TIMEOUT_RX		300
 
+static char applicationMode = APP_STANDBY_MODE;
+
 // ***TFTP server variable definitions here***
 //Stores the amount of bytes received from the last data block
 static int bytesReceived;
@@ -40,11 +41,21 @@ static BYTE * tftpBuffer;
 //A TFTP data block has a maximum of 512B
 #define TFTP_BUFFER_SIZE 512
 
+
+static BYTE i;
+static BYTE retriesLeft;
+static BYTE lastTxByte;
+static BYTE currentTxByte;
+static DWORD codeSize;
 void TFTPInit();
 void TFTPTask();
+static BOOL TFTPWrite();
 static BOOL TFTPRead();
 
+void (*gotoProgram)(void);
+
 int main(void) {
+
 	WDTCTL = WDTPW + WDTHOLD; // Stop watchdog timer
 
 	/*** PERIPHERALS INITIALIZATION ***/
@@ -52,7 +63,7 @@ int main(void) {
 	InitializeTimers(); // Initialize Timers
 
 	/*** BOARD INITIALIZATION ***/
-//	InitializeButton(); // Initialize Button
+	InitializeButton(); // Initialize Button
 	InitializeLeds(); // Initialize LEDs
 	InitializeIO();
 
@@ -81,17 +92,14 @@ int main(void) {
 
 	//Main program loop -> TFTP echo client: Requests a file and then sends it back
 	//NOTE: There is absolutely no handling of error conditions
-	while (1) {
+	while (parserStatus!=PARSER_END_OF_CODE) {
 		StackTask();
 		StackApplications();
 		TFTPTask();
-
-		//If the bootfile is correctly received
-		//we trigger a software POR(Power On Reset)
-		//to switch to the user application
-		if(parserStatus==PARSER_END_OF_CODE)
-			PMMCTL0 |= PMMSWPOR;
 	}
+	// clear ram?
+	gotoProgram = (void (*)(void))0x9400;
+	gotoProgram();
 }
 
 //Initialize TFTP variables
@@ -192,8 +200,10 @@ void TFTPTask() {
 static BOOL TFTPRead() {
 	BOOL lbReturn;
 	TFTP_RESULT result;
+	BYTE v;
 	TFTP_STATE tftpState;
 	static BYTE * currentPtr;
+	// BYTE * currentPtr;
 
 	// State machine states.
 	static enum {
@@ -289,3 +299,36 @@ static BOOL TFTPRead() {
 
 	return lbReturn;
 }
+
+//// Port1 Interrupt for Button press, GDO2 from CC1101 and INT from enc28j60
+//#pragma vector=PORT1_VECTOR
+//__interrupt void PORT1_ISR(void) {
+//// Button Interrupt
+//	if (BUTTON_IFG & BUTTON) {
+//		BUTTON_IFG &= ~BUTTON;
+//		BUTTON_IE &= ~BUTTON; // Debounce
+//		WDTCTL = WDT_ADLY_250; // 250ms assuming 32768Hz for ACLK
+//		SFRIFG1 &= ~WDTIFG; // clear interrupt flag
+//		SFRIE1 |= WDTIE;
+//
+//		if (applicationMode == APP_STANDBY_MODE) {
+//			applicationMode = APP_NORMAL_MODE; // Switch from STANDBY to APPLICATION MODE
+//			LED_OUT &= ~(LED1 + LED2);
+//			__bic_SR_register_on_exit(LPM3_bits);
+//		}
+//
+//		//A second pressing of the button enables the TFTP client
+//		else if (applicationMode == APP_NORMAL_MODE && !StackIsInConfigMode()) {
+//			isTFTPActivated = TRUE;
+//		}
+//	}
+//}
+//
+//// WDT Interrupt Service Routine used to de-bounce button press
+//#pragma vector=WDT_VECTOR
+//__interrupt void WDT_ISR(void) {
+//	SFRIE1 &= ~WDTIE; // disable interrupt
+//	SFRIFG1 &= ~WDTIFG; // clear interrupt flag
+//	WDTCTL = WDTPW + WDTHOLD; // put WDT back in hold state
+//	BUTTON_IE |= BUTTON; // Debouncing complete
+//}
