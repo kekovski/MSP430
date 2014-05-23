@@ -1,4 +1,8 @@
-MSP430
+Project for Computer Communication
+Fixing TFTP loading of programs into MSP430 flash and IP stack evaluation
+KTH
+Stockholm
+Sweden
 ======
 This repository contains basically everything of the bachelor project for Computer Communication "Fixing TFTP loading of programs into MSP430 flash and IP stack evaluation" performed at KTH ICT department in Stockholm/Sweden.
 
