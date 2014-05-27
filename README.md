@@ -1,4 +1,4 @@
-Fixing TFTP loading of programs into MSP430 flash and IP stack evaluation
+TFTP loading of programs into a Microcontroller’s flash memory and evaluation of Microchip’s TCP/IP stack with ENC28J60
 ======
 This repository contains basically everything of the bachelor project for Computer Communication "Fixing TFTP loading of programs into MSP430 flash and IP stack evaluation" performed at KTH ICT department in Stockholm/Sweden.
 
