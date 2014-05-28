@@ -92,6 +92,7 @@ void UDPPerformanceTaskSending(void)
 	UDP_SOCKET	MySocket;
 	NODE_INFO	Remote;
 	WORD		wTemp;
+	BYTE* 		data = "1024b";
 	static DWORD dwCounter = 1;
 
 
@@ -122,7 +123,8 @@ void UDPPerformanceTaskSending(void)
 
 	// Change the last parameter to desired UDP payload size
 	// Formula: Desired payload size - 4
-	wTemp = UDPPutROMArray((ROM BYTE*) "1024b", 1020);
+	// Data is fetched from the RAM
+	wTemp = UDPPutArray(data, 1020);
 
 	// Send UDP packet
 	UDPFlush();
